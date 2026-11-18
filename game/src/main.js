@@ -11,19 +11,19 @@ import { spawnStealableCars } from './vehicles/cars.js';
 import { spawnTraffic, updateTraffic } from './traffic/cars.js';
 import { spawnPeds, updatePeds } from './traffic/pedestrians.js';
 import { updateDriving, updateOnFoot, addPopup } from './vehicles/driving.js';
-import { tryEnterCar, nearGarage, storeCurrentCar, takeOutCar, drawGarageYard } from './vehicles/garage.js';
+import { tryEnterCar, nearGarage, storeCurrentCar, takeOutCar } from './vehicles/garage.js';
 import { updatePolice } from './police/units.js';
 import { updateHeli } from './police/heli.js';
 import { updateWanted } from './police/wanted.js';
 import { updateWeapons, switchWeapon } from './combat/weapons.js';
 import { Music } from './audio/music.js';
 import { Radio } from './audio/radio.js';
-import { buildShops, nearestShop, openShop, drawShops, initShopUI } from './shops.js';
-import { nearSafehouse, useSafehouse, saveGame, loadGame, drawSafehouse } from './safehouse.js';
+import { buildShops, nearestShop, openShop, initShopUI } from './shops.js';
+import { nearSafehouse, useSafehouse, saveGame, loadGame } from './safehouse.js';
 import { initDialog, openDialog, showToast } from './dialog.js';
 import {
   availableJobs, nearestOffer, startJob, updateJobs, updateSide,
-  nearestSideSpot, startSide, drawJobMarkers, drawGivers,
+  nearestSideSpot, startSide,
 } from './missions/jobs.js';
 import { drawGame, updateCamera } from './render.js';
 
@@ -47,7 +47,9 @@ S.radio = new Radio(S.audio);
 initInput(S, canvas);
 initDialog();
 initShopUI(S);
-if (S.audio) S.audio.ensure();
+// Audio starts only after a user gesture (menu click / first key press):
+// Music.ensure() is called from the loop and the menu handlers, so no
+// AudioContext is created here — headless runs stay console-clean.
 
 window.addEventListener('error', (e) => {
   S.errors.push(String(e.message || e.error));
